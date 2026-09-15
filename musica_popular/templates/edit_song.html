@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Editar canción{% endblock %}
+{% block content %}
+<section class="edit-shell">
+  <div class="edit-heading">
+    <p class="eyebrow"><span>04</span> edición de biblioteca</p>
+    <h1>Editar<br><em>canción.</em></h1>
+    <p>Actualiza la información publicada y guarda los cambios en tu colección.</p>
+  </div>
+  <form action="{{ url_for('edit_song', song_id=song.id) }}" method="post" class="edit-form">
+    {% if error %}<div class="notice error">{{ error }}</div>{% endif %}
+    <div class="form-grid"><label>Título<input name="title" required value="{{ song.title }}"></label><label>Artista<input name="artist" required value="{{ song.artist }}"></label></div>
+    <div class="form-grid"><label>Género<input name="genre" required value="{{ song.genre }}"></label><label>Año<input name="year" type="number" min="1900" max="2100" required value="{{ song.year }}"></label></div>
+    <div class="form-grid"><label>Duración<input name="duration" required value="{{ song.duration }}"></label><label>Destacada<select name="featured"><option value="0" {% if not song.featured %}selected{% endif %}>No</option><option value="1" {% if song.featured %}selected{% endif %}>Sí</option></select></label></div>
+    <label>URL de portada<input name="cover" type="url" required value="{{ song.cover }}"></label>
+    <label>URL del audio<input name="audio_url" type="url" required value="{{ song.audio_url }}"></label>
+    <div class="edit-actions"><a class="button button-light" href="{{ url_for('library') }}">Cancelar</a><button class="button button-acid" type="submit">Guardar cambios <span>✓</span></button></div>
+  </form>
+</section>
+{% endblock %}

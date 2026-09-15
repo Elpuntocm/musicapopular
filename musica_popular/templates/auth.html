@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'login' %}Iniciar sesión{% elif mode == 'register' %}Crear usuario{% elif mode == 'forgot' %}Recuperar contraseña{% else %}Restablecer contraseña{% endif %}{% endblock %}
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-intro"><p class="eyebrow"><span>00</span> acceso musicbox</p><h1>{% if mode == 'login' %}Vuelve a<br><em>escuchar.</em>{% elif mode == 'register' %}Crea tu<br><em>espacio.</em>{% elif mode == 'forgot' %}Recupera tu<br><em>acceso.</em>{% else %}Nueva<br><em>contraseña.</em>{% endif %}</h1><p>Tu colección musical, tus descubrimientos y tus canciones en un solo lugar.</p></div>
+  <div class="auth-card">
+    <div class="auth-card-top"><span class="brand-mark">M</span><span class="mini-label">musicbox / cuenta</span></div>
+    {% if request.args.get('created') %}<div class="notice success">Usuario creado. Ya puedes iniciar sesión.</div>{% endif %}{% if request.args.get('reset') %}<div class="notice success">Contraseña actualizada correctamente.</div>{% endif %}{% if error %}<div class="notice error">{{ error }}</div>{% endif %}
+    {% if mode == 'login' %}
+      <h2>Iniciar sesión</h2><p class="auth-copy">Entra a tu archivo sonoro personal.</p>
+      <form class="auth-form" method="post"><label>Correo electrónico<input type="email" name="email" required autocomplete="email" placeholder="tu@correo.com"></label><label>Contraseña<input type="password" name="password" required autocomplete="current-password" placeholder="••••••••"></label><button class="button button-acid" type="submit">Entrar <span>↗</span></button></form>
+      <div class="auth-links"><a href="{{ url_for('forgot_password') }}">¿Olvidaste la contraseña?</a><a href="{{ url_for('register') }}">Crear usuario</a></div>
+    {% elif mode == 'register' %}
+      <h2>Crear usuario</h2><p class="auth-copy">Abre tu propia colección musical.</p>
+      <form class="auth-form" method="post"><label>Nombre<input name="name" required autocomplete="name" placeholder="Tu nombre"></label><label>Correo electrónico<input type="email" name="email" required autocomplete="email" placeholder="tu@correo.com"></label><label>Contraseña<input type="password" name="password" required minlength="8" autocomplete="new-password" placeholder="Mínimo 8 caracteres"></label><label>Repite la contraseña<input type="password" name="confirmation" required minlength="8" autocomplete="new-password" placeholder="Vuelve a escribirla"></label><button class="button button-acid" type="submit">Crear cuenta <span>＋</span></button></form>
+      <div class="auth-links"><a href="{{ url_for('login') }}">Ya tengo una cuenta</a></div>
+    {% elif mode == 'forgot' %}
+      <h2>Recuperar acceso</h2><p class="auth-copy">Escribe tu correo y generaremos un código temporal para continuar.</p>
+      {% if recovery_code %}<div class="recovery-code"><span>CÓDIGO LOCAL</span><strong>{{ recovery_code }}</strong><small>Usa este código en el siguiente paso. Expira en 15 minutos.</small><a href="{{ url_for('reset_password_route') }}">Continuar con el código →</a></div>{% endif %}
+      <form class="auth-form" method="post"><label>Correo electrónico<input type="email" name="email" required autocomplete="email" placeholder="tu@correo.com"></label><button class="button button-acid" type="submit">Generar código <span>↗</span></button></form>
+      <div class="auth-links"><a href="{{ url_for('login') }}">Volver a iniciar sesión</a></div>
+    {% else %}
+      <h2>Restablecer contraseña</h2><p class="auth-copy">Introduce el código que recibiste y elige una contraseña nueva.</p>
+      <form class="auth-form" method="post"><label>Correo electrónico<input type="email" name="email" required value="{{ recovery_email or '' }}"></label><label>Código temporal<input name="code" required inputmode="numeric" pattern="[0-9]{6}" placeholder="000000"></label><label>Nueva contraseña<input type="password" name="password" required minlength="8" autocomplete="new-password" placeholder="Mínimo 8 caracteres"></label><label>Repite la contraseña<input type="password" name="confirmation" required minlength="8" autocomplete="new-password" placeholder="Vuelve a escribirla"></label><button class="button button-acid" type="submit">Guardar contraseña <span>✓</span></button></form>
+      <div class="auth-links"><a href="{{ url_for('login') }}">Volver a iniciar sesión</a></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

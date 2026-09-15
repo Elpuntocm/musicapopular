@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<section class="hero-shell">
+  <div class="hero-copy">
+    <p class="eyebrow"><span>01</span> archivo abierto / sonido en movimiento</p>
+    {% if current_user %}<h1>Escucha lo que<br><em>te mueve.</em></h1><p class="hero-text">Una colección viva para descubrir canciones, guardar tus esenciales y dejar que cada ritmo encuentre su lugar.</p><a class="button button-dark" href="{{ url_for('library') }}">Explorar biblioteca <span>↗</span></a>{% else %}<h1>Tu música<br><em>te espera.</em></h1><p class="hero-text">Inicia sesión para descubrir canciones populares, guardar tus favoritas y entrar a tu biblioteca personal.</p><div class="guest-actions"><a class="button button-dark" href="{{ url_for('login', next='/') }}">Iniciar sesión <span>↗</span></a><a class="guest-link" href="{{ url_for('register') }}">Crear usuario</a></div>{% endif %}
+  </div>
+  <div class="hero-player" aria-label="Intro musical">
+    <div class="player-topline"><span class="live-pill"><i></i> ahora suena</span><span class="mini-label">MIX 001 / POPULAR</span></div>
+    <div class="player-art"><img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=900&q=80" alt="Ambiente de música popular"><span class="art-sticker">M<br><small>LIVE</small></span></div>
+    <div class="player-details"><div><span class="mini-label">INTRO MUSICBOX</span><h2>Entre copas<br><em>y canciones.</em></h2><p>Popular colombiano · selección de entrada</p></div><button class="play-button" type="button" data-audio-target="intro-player" aria-label="Reproducir intro">▶</button></div>
+    <div class="waveform" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="player-time"><span>0:00</span><span>3:42</span></div>
+    <audio id="intro-player" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"></audio>
+  </div>
+</section>
+{% if current_user %}<section class="featured-section">
+  <div class="section-heading"><div><p class="eyebrow"><span>02</span> selección editorial</p><h2>Las esenciales<span class="accent">.</span></h2></div><a class="text-link" href="{{ url_for('library') }}">ver todo <span>→</span></a></div>
+  <div class="featured-grid">
+    {% for song in featured %}
+    <article class="featured-card">
+      <div class="cover-wrap"><img src="{{ song.cover }}" alt="Imagen de {{ song.artist }}" loading="lazy"><span class="card-index">0{{ loop.index }}</span><span class="artist-stamp">{{ song.artist }}</span><button class="card-play" type="button" data-audio-url="{{ song.audio_url }}" aria-label="Reproducir {{ song.title }}">▶</button></div>
+      <div class="song-meta"><div><h3>{{ song.title }}</h3><p>{{ song.artist }}</p><a class="source-link" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query={{ (song.title ~ ' ' ~ song.artist)|urlencode }}">escuchar original ↗</a></div><span class="genre-tag">{{ song.genre }}</span></div>
+    </article>
+    {% endfor %}
+  </div>
+</section>{% else %}<section class="guest-banner"><span class="guest-banner-mark">!</span><div><p class="eyebrow"><span>02</span> acceso restringido</p><h2>Entra para desbloquear<br><em>tu biblioteca.</em></h2></div><a class="button button-acid" href="{{ url_for('login') }}">Acceder ahora <span>↗</span></a></section>{% endif %}
+<section class="manifesto"><p>La música no se archiva.<br><strong>Se vuelve a encontrar.</strong></p><span class="manifesto-line"></span><span class="manifesto-index">M / 2024—∞</span></section>
+{% endblock %}

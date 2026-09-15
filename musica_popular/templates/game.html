@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Juego{% endblock %}
+{% block content %}
+<section class="game-shell">
+  <div class="game-intro"><p class="eyebrow"><span>05</span> pausa musical</p><h1>¿Quién<br><em>canta?</em></h1><p>Adivina el artista de la canción y suma puntos para convertirte en quien más conoce la colección.</p><a class="text-link" href="{{ url_for('game', nuevo=1) }}">reiniciar partida ↻</a></div>
+  {% if question %}
+  <div class="game-card">
+    <div class="game-top"><span class="live-pill"><i></i> reto activo</span><span class="score-pill">PUNTOS <strong>{{ score }}</strong> · RACHA <strong>{{ streak }}</strong></span></div>
+    <div class="game-cover"><img src="{{ question.cover }}" alt="Portada de la canción"><span class="game-question">¿QUIÉN INTERPRETA<br>ESTA CANCIÓN?</span><span class="game-number">M / 0{{ score + 1 }}</span></div>
+    <div class="game-song"><span class="mini-label">TÍTULO</span><h2>{{ question.title }}</h2><p>{{ question.genre }} · {{ question.year }}</p></div>
+    {% if feedback == 'correct' %}<div class="game-feedback correct">¡Correcto! Vas muy bien.</div>{% elif feedback == 'wrong' %}<div class="game-feedback wrong">Casi. La respuesta era {{ feedback_artist }}.</div>{% endif %}
+    <form class="game-options" method="post">{% for artist in choices %}<button type="submit" name="artist" value="{{ artist }}">{{ '%02d'|format(loop.index) }} <span>{{ artist }}</span><b>→</b></button>{% endfor %}</form>
+  </div>
+  {% else %}<div class="game-card empty-game"><h2>No hay canciones todavía.</h2><p>Agrega canciones a tu biblioteca para comenzar a jugar.</p><a class="button button-acid" href="{{ url_for('library') }}">Ir a biblioteca <span>↗</span></a></div>{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Musicbox{% endblock %} · archivo sonoro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+  <script defer src="{{ url_for('static', filename='JS/app.js') }}"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('home') }}"><span class="brand-mark">M</span><span>musicbox<span class="brand-dot">.</span></span></a>
+    <nav class="main-nav" aria-label="Navegación principal">
+      <a class="nav-link {% if request.endpoint == 'home' %}active{% endif %}" href="{{ url_for('home') }}">Inicio</a>
+      {% if current_user %}<a class="nav-link {% if request.endpoint == 'library' %}active{% endif %}" href="{{ url_for('library') }}">Biblioteca</a><a class="nav-link {% if request.endpoint == 'game' %}active{% endif %}" href="{{ url_for('game') }}">Juego</a>{% endif %}
+    </nav>
+    <div class="header-status"><span class="status-dot"></span>{% if current_user %}<a class="account-link" href="{{ url_for('profile') }}">{{ current_user }}</a><a class="account-link" href="{{ url_for('logout') }}">salir</a>{% else %}<a class="account-link" href="{{ url_for('login') }}">iniciar sesión</a>{% endif %}</div>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  <footer class="site-footer"><span>musicbox / archivo sonoro personal</span><span>{{ current_year }} · {{ 'MySQL conectado' if using_mysql else 'modo local' }}</span></footer>
+</body>
+</html>

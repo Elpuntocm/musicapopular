@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Biblioteca{% endblock %}
+{% block content %}
+<section class="library-header"><div><p class="eyebrow"><span>03</span> tu universo musical</p><h1>La biblioteca<span class="accent">.</span></h1></div><p class="library-intro">Busca por nombre, filtra por género o añade una nueva pieza a tu colección.</p></section>
+<section class="library-layout">
+  <div class="catalogue">
+    <form class="filter-bar" method="get" action="{{ url_for('library') }}">
+      <label class="search-box"><span>⌕</span><input type="search" name="q" value="{{ search }}" placeholder="Buscar canción o artista..."></label>
+      <select name="genre" aria-label="Filtrar por género"><option value="">Todos los géneros</option>{% for genre in genres %}<option value="{{ genre }}" {% if selected_genre == genre %}selected{% endif %}>{{ genre }}</option>{% endfor %}</select>
+      <button class="button button-dark filter-submit" type="submit">Filtrar</button>
+    </form>
+    {% if request.args.get('created') %}<div class="notice success">Canción añadida a tu biblioteca.</div>{% endif %}{% if request.args.get('updated') %}<div class="notice success">Canción actualizada correctamente.</div>{% endif %}{% if request.args.get('deleted') %}<div class="notice success">Canción eliminada de tu biblioteca.</div>{% endif %}{% if request.args.get('error') %}<div class="notice error">{{ request.args.get('error') }}</div>{% endif %}
+    <div class="catalogue-top"><span>{{ songs|length }} canciones encontradas</span><span class="mono-label">orden: recientes</span></div>
+    <div class="song-list">
+      {% for song in songs %}
+      <article class="song-row"><span class="row-number">{{ '%02d'|format(loop.index) }}</span><img class="row-cover" src="{{ song.cover }}" alt="Imagen de {{ song.artist }}"><div class="row-info"><h3>{{ song.title }}</h3><p>{{ song.artist }}</p><a class="source-link" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query={{ (song.title ~ ' ' ~ song.artist)|urlencode }}">fuente original ↗</a></div><span class="row-genre">{{ song.genre }}</span><span class="row-year">{{ song.year }}</span><span class="row-duration">{{ song.duration }}</span><a class="row-edit" href="{{ url_for('edit_song', song_id=song.id) }}" aria-label="Editar {{ song.title }}" title="Editar canción">✎</a><button class="row-play" type="button" data-audio-url="{{ song.audio_url }}" aria-label="Reproducir {{ song.title }}">▶</button><form class="delete-form" action="{{ url_for('remove_song', song_id=song.id) }}" method="post" onsubmit="return confirm('¿Eliminar esta canción de tu biblioteca?');"><button class="row-delete" type="submit" aria-label="Eliminar {{ song.title }}" title="Eliminar canción">×</button></form></article>
+      {% else %}<div class="empty-state">No hay canciones que coincidan. Prueba otra búsqueda.</div>{% endfor %}
+    </div>
+  </div>
+  <aside class="create-panel"><p class="eyebrow"><span>+</span> nueva entrada</p><h2>Crea tu<br><em>propia pista.</em></h2><p class="panel-copy">Agrega canciones y construye un archivo que hable de ti.</p><form action="{{ url_for('add_song') }}" method="post" class="song-form"><label>Título<input name="title" required placeholder="Nombre de la canción"></label><label>Artista<input name="artist" required placeholder="Quién la interpreta"></label><div class="form-grid"><label>Género<input name="genre" required placeholder="Indie, jazz..."></label><label>Año<input name="year" type="number" min="1900" max="2100" required placeholder="2024"></label></div><div class="form-grid"><label>Duración<input name="duration" required placeholder="3:42"></label><label>Destacada<select name="featured"><option value="0">No</option><option value="1">Sí</option></select></label></div><label>URL de portada<input name="cover" type="url" required placeholder="https://..."></label><label>URL del audio<input name="audio_url" type="url" required placeholder="https://..."></label><button class="button button-acid" type="submit">Añadir canción <span>＋</span></button></form></aside>
+</section>
+{% endblock %}
